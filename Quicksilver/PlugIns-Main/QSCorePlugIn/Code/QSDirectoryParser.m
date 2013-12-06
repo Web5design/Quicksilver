@@ -36,7 +36,7 @@
     NSMutableArray *excludedTypes = [NSMutableArray array];
     for (NSString *excludedType in [settings objectForKey:kItemExcludeFiletypes]) {
         NSString *realType = QSUTIForAnyTypeString(excludedType);
-        if (!realType) {
+        if (!realType && !QSIsUTI(excludedType)) {
             realType = QSUTIForExtensionOrType(excludedType, 0);
         }
         [excludedTypes addObject:(realType ? realType : excludedType)];
@@ -89,14 +89,14 @@
             include = YES;
         } else {
             for(NSString * requiredType in types) {
-                if (UTTypeConformsTo((CFStringRef)type, (CFStringRef)requiredType)) {
+                if (QSTypeConformsTo(type, requiredType)) {
                     include = YES;
                     break;
                 }
             }
         }
         for (NSString *excludedType in excludedTypes) {
-            if (UTTypeConformsTo((CFStringRef)type, (CFStringRef)excludedType)) {
+            if (QSTypeConformsTo(type, excludedType)) {
                 include = NO;
             }
         }
